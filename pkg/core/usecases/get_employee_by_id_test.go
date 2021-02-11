@@ -12,16 +12,16 @@ func TestGetEmployeeByIdUseCase_Execute(t *testing.T) {
 
 	defer ctrl.Finish()
 
-	mockEmployeeRepository := mocks.NewMockEmployeeRepository(ctrl)
+	mockEmployeeDataSource := mocks.NewMockEmployeeDataSource(ctrl)
 	mockAvatarProvider := mocks.NewMockAvatarProvider(ctrl)
 
 	getEmployeeByIdUseCase := NewGetEmployeeByIdUseCase(
 		42,
-		mockEmployeeRepository,
+		mockEmployeeDataSource,
 		mockAvatarProvider,
 	)
 
-	mockEmployeeRepository.EXPECT().
+	mockEmployeeDataSource.EXPECT().
 		GetById(int64(42)).
 		Return(
 			&entities.Employee{

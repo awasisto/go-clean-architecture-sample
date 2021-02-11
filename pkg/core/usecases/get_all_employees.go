@@ -6,22 +6,22 @@ import (
 )
 
 type GetAllEmployeesUseCase struct {
-	employeeRepository data.EmployeeRepository
+	employeeDataSource data.EmployeeDataSource
 	avatarProvider     data.AvatarProvider
 }
 
 func NewGetAllEmployeesUseCase(
-	employeeRepository data.EmployeeRepository,
+	employeeDataSource data.EmployeeDataSource,
 	avatarProvider data.AvatarProvider,
 ) *GetAllEmployeesUseCase {
 	return &GetAllEmployeesUseCase{
-		employeeRepository: employeeRepository,
+		employeeDataSource: employeeDataSource,
 		avatarProvider:     avatarProvider,
 	}
 }
 
 func (uc *GetAllEmployeesUseCase) Execute() ([]entities.Employee, error) {
-	employees, err := uc.employeeRepository.GetAll()
+	employees, err := uc.employeeDataSource.GetAll()
 	if err != nil {
 		return nil, err
 	}

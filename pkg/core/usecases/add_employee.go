@@ -7,29 +7,29 @@ import (
 
 type AddEmployeeUseCase struct {
 	employee           entities.Employee
-	employeeRepository data.EmployeeRepository
+	employeeDataSource data.EmployeeDataSource
 	avatarProvider     data.AvatarProvider
 }
 
 func NewAddEmployeeUseCase(
 	employee entities.Employee,
-	employeeRepository data.EmployeeRepository,
+	employeeDataSource data.EmployeeDataSource,
 	avatarProvider data.AvatarProvider,
 ) *AddEmployeeUseCase {
 	return &AddEmployeeUseCase{
 		employee:           employee,
-		employeeRepository: employeeRepository,
+		employeeDataSource: employeeDataSource,
 		avatarProvider:     avatarProvider,
 	}
 }
 
 func (uc *AddEmployeeUseCase) Execute() (createdEmployee *entities.Employee, err error) {
-	employeeId, err := uc.employeeRepository.Add(uc.employee)
+	employeeId, err := uc.employeeDataSource.Add(uc.employee)
 	if err != nil {
 		return nil, err
 	}
 
-	getEmployeeByIdUseCase := NewGetEmployeeByIdUseCase(employeeId, uc.employeeRepository, uc.avatarProvider)
+	getEmployeeByIdUseCase := NewGetEmployeeByIdUseCase(employeeId, uc.employeeDataSource, uc.avatarProvider)
 
 	return getEmployeeByIdUseCase.Execute()
 }

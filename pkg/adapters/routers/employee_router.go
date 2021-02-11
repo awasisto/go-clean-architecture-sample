@@ -14,7 +14,7 @@ import (
 
 type EmployeeRouter struct {
 	MuxRouter          mux.Router
-	employeeRepository data.EmployeeRepository
+	employeeDataSource data.EmployeeDataSource
 	avatarProvider     data.AvatarProvider
 }
 
@@ -30,12 +30,12 @@ type jsonableEmployee struct {
 }
 
 func NewEmployeeRouter(
-	employeeRepository data.EmployeeRepository,
+	employeeDataSource data.EmployeeDataSource,
 	avatarProvider data.AvatarProvider,
 ) EmployeeRouter {
 	employeeRouter := EmployeeRouter{
 		MuxRouter:          *mux.NewRouter(),
-		employeeRepository: employeeRepository,
+		employeeDataSource: employeeDataSource,
 		avatarProvider:     avatarProvider,
 	}
 
@@ -76,7 +76,7 @@ func (e *EmployeeRouter) addEmployeeHandler(httpResponseWriter http.ResponseWrit
 			Name:  requestObj.Name,
 			Email: requestObj.Email,
 		},
-		e.employeeRepository,
+		e.employeeDataSource,
 		e.avatarProvider,
 	)
 
@@ -92,7 +92,7 @@ func (e *EmployeeRouter) addEmployeeHandler(httpResponseWriter http.ResponseWrit
 }
 
 func (e *EmployeeRouter) getAllEmployeesHandler(httpResponseWriter http.ResponseWriter, _ *http.Request) {
-	getAllEmployeesUseCase := usecases.NewGetAllEmployeesUseCase(e.employeeRepository, e.avatarProvider)
+	getAllEmployeesUseCase := usecases.NewGetAllEmployeesUseCase(e.employeeDataSource, e.avatarProvider)
 
 	employees, err := getAllEmployeesUseCase.Execute()
 	if err != nil {
@@ -121,7 +121,7 @@ func (e *EmployeeRouter) getEmployeeByIdHandler(httpResponseWriter http.Response
 		return
 	}
 
-	getEmployeeByIdUseCase := usecases.NewGetEmployeeByIdUseCase(employeeId, e.employeeRepository, e.avatarProvider)
+	getEmployeeByIdUseCase := usecases.NewGetEmployeeByIdUseCase(employeeId, e.employeeDataSource, e.avatarProvider)
 
 	employee, err := getEmployeeByIdUseCase.Execute()
 	if err != nil {

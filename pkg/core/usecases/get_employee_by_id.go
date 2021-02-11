@@ -7,24 +7,24 @@ import (
 
 type GetEmployeeByIdUseCase struct {
 	employeeId         int64
-	employeeRepository data.EmployeeRepository
+	employeeDataSource data.EmployeeDataSource
 	avatarProvider     data.AvatarProvider
 }
 
 func NewGetEmployeeByIdUseCase(
 	employeeId int64,
-	employeeRepository data.EmployeeRepository,
+	employeeDataSource data.EmployeeDataSource,
 	avatarProvider data.AvatarProvider,
 ) *GetEmployeeByIdUseCase {
 	return &GetEmployeeByIdUseCase{
 		employeeId:         employeeId,
-		employeeRepository: employeeRepository,
+		employeeDataSource: employeeDataSource,
 		avatarProvider:     avatarProvider,
 	}
 }
 
 func (uc *GetEmployeeByIdUseCase) Execute() (*entities.Employee, error) {
-	employee, err := uc.employeeRepository.GetById(uc.employeeId)
+	employee, err := uc.employeeDataSource.GetById(uc.employeeId)
 	if err != nil {
 		return nil, err
 	}
