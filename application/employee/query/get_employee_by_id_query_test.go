@@ -1,13 +1,14 @@
-package usecases
+package query
 
 import (
 	"github.com/golang/mock/gomock"
-	"golang-clean-architecture-sample/pkg/core/data/mocks"
-	"golang-clean-architecture-sample/pkg/core/entities"
+	"github.com/stretchr/testify/assert"
+	"go-clean-architecture-sample/application/common/interfaces/mocks"
+	"go-clean-architecture-sample/domain/entities"
 	"testing"
 )
 
-func TestGetEmployeeByIdUseCase_Execute(t *testing.T) {
+func TestGetEmployeeById(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	defer ctrl.Finish()
@@ -15,14 +16,13 @@ func TestGetEmployeeByIdUseCase_Execute(t *testing.T) {
 	mockEmployeeDataSource := mocks.NewMockEmployeeDataSource(ctrl)
 	mockAvatarProvider := mocks.NewMockAvatarProvider(ctrl)
 
-	getEmployeeByIdUseCase := NewGetEmployeeByIdUseCase(
-		42,
+	getEmployeeByIdQueryHandler := NewGetEmployeeByIdQueryHandler(
 		mockEmployeeDataSource,
 		mockAvatarProvider,
 	)
 
 	mockEmployeeDataSource.EXPECT().
-		GetById(int64(42)).
+		GetById(42).
 		Return(
 			&entities.Employee{
 				Id:    42,
@@ -43,9 +43,7 @@ func TestGetEmployeeByIdUseCase_Execute(t *testing.T) {
 		AvatarUrl: "http://example.com/john_smith.jpg",
 	}
 
-	got, _ := getEmployeeByIdUseCase.Execute()
+	got, _ := getEmployeeByIdQueryHandler.Handle(GetEmployeeByIdQuery{EmployeeId: 42})
 
-	if *got != want {
-		t.Errorf("Execute() = %v; want %v", got, want)
-	}
+	assert.Equal(t, want, *got)
 }

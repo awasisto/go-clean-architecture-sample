@@ -6,7 +6,7 @@ package mocks
 
 import (
 	gomock "github.com/golang/mock/gomock"
-	entities "golang-clean-architecture-sample/pkg/core/entities"
+	"go-clean-architecture-sample/domain/entities"
 	reflect "reflect"
 )
 
@@ -34,10 +34,10 @@ func (m *MockEmployeeDataSource) EXPECT() *MockEmployeeDataSourceMockRecorder {
 }
 
 // Add mocks base method
-func (m *MockEmployeeDataSource) Add(employee entities.Employee) (int64, error) {
+func (m *MockEmployeeDataSource) Add(employee entities.Employee) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Add", employee)
-	ret0, _ := ret[0].(int64)
+	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -64,7 +64,7 @@ func (mr *MockEmployeeDataSourceMockRecorder) GetAll() *gomock.Call {
 }
 
 // GetById mocks base method
-func (m *MockEmployeeDataSource) GetById(id int64) (*entities.Employee, error) {
+func (m *MockEmployeeDataSource) GetById(id int) (*entities.Employee, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetById", id)
 	ret0, _ := ret[0].(*entities.Employee)

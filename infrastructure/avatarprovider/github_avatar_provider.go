@@ -1,9 +1,9 @@
-package githubavatarprovider
+package avatarprovider
 
 import (
 	"encoding/json"
 	"fmt"
-	"golang-clean-architecture-sample/pkg/core"
+	"go-clean-architecture-sample/application/common/errors"
 	"io/ioutil"
 	"net/http"
 )
@@ -18,20 +18,20 @@ func NewGithubAvatarProvider() *GithubAvatarProvider {
 	}
 }
 
-func (g *GithubAvatarProvider) GetAvatarUrlByEmail(email string) (string, error) {
-	avatarUrl, cacheHit := g.avatarUrlCache[email]
+func (p *GithubAvatarProvider) GetAvatarUrlByEmail(email string) (string, error) {
+	avatarUrl, cacheHit := p.avatarUrlCache[email]
 
 	if !cacheHit {
 		httpResponse, err := http.Get(fmt.Sprintf("https://api.github.com/search/users?q=%s%%20in:email", email))
 		if err != nil {
-			return "", core.ErrInternal
+			return "", errors.ErrInternal
 		}
 
 		defer httpResponse.Body.Close()
 
 		body, err := ioutil.ReadAll(httpResponse.Body)
 		if err != nil {
-			return "", core.ErrInternal
+			return "", errors.ErrInternal
 		}
 
 		var githubSearchResponse struct {
@@ -42,7 +42,7 @@ func (g *GithubAvatarProvider) GetAvatarUrlByEmail(email string) (string, error)
 
 		err = json.Unmarshal(body, &githubSearchResponse)
 		if err != nil {
-			return "", core.ErrInternal
+			return "", errors.ErrInternal
 		}
 
 		if len(githubSearchResponse.Items) != 1 {
@@ -51,7 +51,7 @@ func (g *GithubAvatarProvider) GetAvatarUrlByEmail(email string) (string, error)
 
 		avatarUrl = githubSearchResponse.Items[0].AvatarUrl
 
-		g.avatarUrlCache[email] = avatarUrl
+		p.avatarUrlCache[email] = avatarUrl
 	}
 
 	return avatarUrl, nil

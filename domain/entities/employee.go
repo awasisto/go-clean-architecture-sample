@@ -1,7 +1,7 @@
 package entities
 
 type Employee struct {
-	Id        int64
+	Id        int
 	Name      string
 	Email     string
 	AvatarUrl string
